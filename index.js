@@ -24,12 +24,19 @@ async function run() {
         //Items API
         //GET
         app.get('/item', async (req, res) => {
-            const query = {};
+            const email = req.query.email;
+            let query;
+            if (email) {
+                query = { email: email };
+            }
+            else {
+                query = {};
+            }
             const cursor = itemCollection.find(query);
             const items = await cursor.toArray();
             res.send(items);
-        });
 
+        });
         app.get('/item/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
@@ -56,12 +63,8 @@ async function run() {
         app.put('/item/:id', async (req, res) => {
             const id = req.params.id;
             const updatedItem = req.body;
-            // console.log("ID:", id);
-            // console.log("item:", updatedItem);
             const filter = { _id: ObjectId(id) };
             const options = { upsert: true };
-            // console.log(filter);
-            // console.log(options);
             const updatedDoc = {
                 $set: {
                     quantity: updatedItem.quantity
@@ -69,7 +72,6 @@ async function run() {
             };
             console.log(updatedDoc);
             const result = await itemCollection.updateOne(filter, updatedDoc, options);
-            console.log(result);
             res.send(result);
         })
 
