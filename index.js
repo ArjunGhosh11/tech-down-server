@@ -36,6 +36,14 @@ async function run() {
             const item = await itemCollection.findOne(query);
             res.send(item);
         });
+        //POST
+        app.post('/item', async (req, res) => {
+            const newItem = req.body;
+            console.log('Adding new item', newItem);
+            const result = await itemCollection.insertOne(newItem);
+            res.send(result);
+
+        });
         //DELETE
         app.delete('/item/:id', async (req, res) => {
             const id = req.params.id;
@@ -48,19 +56,20 @@ async function run() {
         app.put('/item/:id', async (req, res) => {
             const id = req.params.id;
             const updatedItem = req.body;
+            // console.log("ID:", id);
+            // console.log("item:", updatedItem);
             const filter = { _id: ObjectId(id) };
             const options = { upsert: true };
+            // console.log(filter);
+            // console.log(options);
             const updatedDoc = {
                 $set: {
-                    _id: updatedItem._id,
-                    name: updatedItem.name,
-
                     quantity: updatedItem.quantity
                 }
             };
             console.log(updatedDoc);
             const result = await itemCollection.updateOne(filter, updatedDoc, options);
-
+            console.log(result);
             res.send(result);
         })
 
