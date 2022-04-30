@@ -22,6 +22,7 @@ async function run() {
         console.log('CONNECTED TO MONGODB');
 
         //Items API
+        //GET
         app.get('/item', async (req, res) => {
             const query = {};
             const cursor = itemCollection.find(query);
@@ -35,7 +36,33 @@ async function run() {
             const item = await itemCollection.findOne(query);
             res.send(item);
         });
+        //DELETE
+        app.delete('/item/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await itemCollection.deleteOne(query);
+            res.send(result);
+        })
 
+        //Update item
+        app.put('/item/:id', async (req, res) => {
+            const id = req.params.id;
+            const updatedItem = req.body;
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true };
+            const updatedDoc = {
+                $set: {
+                    _id: updatedItem._id,
+                    name: updatedItem.name,
+
+                    quantity: updatedItem.quantity
+                }
+            };
+            console.log(updatedDoc);
+            const result = await itemCollection.updateOne(filter, updatedDoc, options);
+
+            res.send(result);
+        })
 
     }
 
