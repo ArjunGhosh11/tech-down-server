@@ -19,7 +19,25 @@ async function run() {
     try {
         await client.connect();
         const itemCollection = client.db('techDown').collection('item');
+        const supplierCollection = client.db('techDown').collection('supplier');
         console.log('CONNECTED TO MONGODB');
+
+        //Supplier API
+        //Get
+        app.get('/supplier', async (req, res) => {
+            const query = {};
+            const cursor = supplierCollection.find(query);
+            const items = await cursor.toArray();
+            res.send(items);
+        });
+        //Post
+        app.post('/supplier', async (req, res) => {
+            const newSupplier = req.body;
+            console.log('Adding new Supplier', newSupplier);
+            const result = await supplierCollection.insertOne(newSupplier);
+            res.send(result);
+
+        });
 
         //Items API
         //GET
