@@ -20,9 +20,6 @@ async function run() {
         await client.connect();
         const itemCollection = client.db('techDown').collection('item');
         const supplierCollection = client.db('techDown').collection('supplier');
-        console.log('CONNECTED TO MONGODB');
-
-
         //AUTH
         app.post('/login', async (req, res) => {
             const user = req.body;
@@ -31,7 +28,6 @@ async function run() {
                     expiresIn: '1d'
                 });
             res.send({ accessToken });
-            console.log(accessToken);
         })
         //Supplier API
         //Get
@@ -44,7 +40,6 @@ async function run() {
         //Post
         app.post('/supplier', async (req, res) => {
             const newSupplier = req.body;
-            console.log('Adding new Supplier', newSupplier);
             const result = await supplierCollection.insertOne(newSupplier);
             res.send(result);
 
@@ -75,7 +70,6 @@ async function run() {
         //POST
         app.post('/item', async (req, res) => {
             const newItem = req.body;
-            console.log('Adding new item', newItem);
             const result = await itemCollection.insertOne(newItem);
             res.send(result);
 
@@ -99,7 +93,6 @@ async function run() {
                     quantity: updatedItem.quantity
                 }
             };
-            console.log(updatedDoc);
             const result = await itemCollection.updateOne(filter, updatedDoc, options);
             res.send(result);
         })
