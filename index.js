@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 const port = process.env.PORT || 5000;
-
+const jwt = require('jsonwebtoken');
 const app = express();
 
 //MIDDLEWARE 
@@ -22,6 +22,17 @@ async function run() {
         const supplierCollection = client.db('techDown').collection('supplier');
         console.log('CONNECTED TO MONGODB');
 
+
+        //AUTH
+        app.post('/login', async (req, res) => {
+            const user = req.body;
+            const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET,
+                {
+                    expiresIn: '1d'
+                });
+            res.send({ accessToken });
+            console.log(accessToken);
+        })
         //Supplier API
         //Get
         app.get('/supplier', async (req, res) => {
